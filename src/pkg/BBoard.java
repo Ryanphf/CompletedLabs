@@ -7,6 +7,7 @@ public class BBoard {		// This is your main file that connects all classes.
 private String title;
 private ArrayList<User> userList = new ArrayList<>();
 private User currentUser;
+private ArrayList<Message> messages = new ArrayList<>();
 
 	// Default constructor that creates a board with a default-title, empty user and message lists,
 	// and no current user
@@ -23,9 +24,12 @@ private User currentUser;
 	// Opens and reads the file of all authorized users and passwords
 	// Constructs a User object from each name/password pair, and populates the userList ArrayList.
 	public void loadUsers(String inputFile) throws FileNotFoundException {
-		Scanner read = new Scanner(inputFile);
-		while (read.hasNext()) {
-			User temp = new User(read.next(), read.next());
+		File lists = new File(inputFile);
+		Scanner read = new Scanner(lists);
+		while (read.hasNextLine()) {
+			String line = read.nextLine();
+			String[] us = line.split(" ");
+			User temp = new User(us[0], us[1].trim());
 			userList.add(temp);
 		}
 	}
@@ -41,7 +45,7 @@ private User currentUser;
 		String enteredPass;
 		boolean doMatch = false;
 
-	while (doMatch == false)	{
+	while (!doMatch)	{
 		System.out.print("Enter your username: ");
 		enterdUsr = inp.next();
 
@@ -54,12 +58,14 @@ private User currentUser;
 		enteredPass = inp.next();
 
 			for (int i = 0; i < userList.size(); i++)	{
-				User temp = new User(enterdUsr,enteredPass);
-				if(temp.check(enterdUsr,enteredPass) == true)	{
+				User p = userList.get(i);
+				if(p.check(enterdUsr,enteredPass))	{
 					currentUser = userList.get(i);
+					System.out.println("Welcome Back " + currentUser.getUsername() + "!");
 					doMatch = true;
 				}
 			}
+
 	}
 	}
 	
@@ -95,7 +101,7 @@ private User currentUser;
 
 	// Each Topic also stores the username of currentUser; and message ID, which is (index of its Message + 1)
 
-	// For example, the first message on the board will be a Topic who's index will be stored at 0 in the messageList ArrayList,
+	// For example, the first message on the board will be a Topic whose index will be stored at 0 in the messageList ArrayList,
 	// so its message ID will be (0+1) = 1
 	// Once the Topic has been constructed, add it to the messageList
 	// This should invoke your inheritance of Topic to Message
