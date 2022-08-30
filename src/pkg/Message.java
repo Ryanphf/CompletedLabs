@@ -3,7 +3,7 @@ import java.util.*;
 import java.io.*;
 
 public class Message {
-
+	private ArrayList <Message> children = new ArrayList<>();
 	private String author;
 	private String Subject;
 	private String body;
@@ -32,7 +32,13 @@ public class Message {
 	// Note: Each indentation increment represents 2 spaces. e.g. if indentation ==  1, the reply should be indented 2 spaces, 
 	// if it's 2, indent by 4 spaces, etc. 
 	public void print(int indentation){
-
+		System.out.println(author+": "+Subject+" "+body+" "+ replynum);
+			for(int i =0; i<indentation+1;i++)	{
+				System.out.print("  ");
+			}
+			for(int i = 0; i<children.size();i++)	{
+				children.get(i).print(indentation+1);
+			}
 	}
 
 	// Default function for inheritance
@@ -55,7 +61,7 @@ public class Message {
 
 	// Adds a child pointer to the parent's childList.
 	public void addChild(Message child){
-		
+		children.add(child);
 	}
 
 }

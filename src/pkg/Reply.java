@@ -3,8 +3,7 @@ import java.util.*;
 import java.io.*;
 
 public class Reply extends Message {
-
-
+	String Subject;
 	// Default Constructor
 	public Reply() {
 
@@ -12,7 +11,8 @@ public class Reply extends Message {
 
 	// Parameterized Constructor
 	public Reply(String auth, String subj, String bod, int i) {
-		super();
+		super(auth,subj,bod,i);
+		Subject = "Re: "+ subj;
 
 	}
 

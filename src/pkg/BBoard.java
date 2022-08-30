@@ -80,14 +80,46 @@ private ArrayList<Message> messages = new ArrayList<>();
 	// Q/q should reset the currentUser to 0 and then end return
 	// Note: if login() did not set a valid currentUser, function must immediately return without showing menu
 	public void run(){
+		Scanner read = new Scanner(System.in);
+		String inp;
+		login();
+		while (true)	{
+		if(currentUser!=null) {
+			System.out.println("");
+			System.out.println(title);
+			System.out.println("");
+			System.out.println(" --- Display Messages ('D' or 'd') \n --- Add New Topic ('N' or 'n')\n --- Add Reply ('R' or 'r') \n --- Change Password ('P' or 'p')\n --- Quit ('Q' or 'q')");
+			inp = read.next();
+			if (inp.equals("d") || inp.equals("D")) {
+				display();
+			}
+			if (inp.equals("n") || inp.equals("N")) {
+				addTopic();
+			}
+			if (inp.equals("r") || inp.equals("R")) {
+				addReply();
+			}
+			if (inp.equals("p") || inp.equals("P")) {
+				setPassword();
+			}
+			if (inp.equals("q") || inp.equals("Q")) {
+				System.out.print("Bye!");
+				break;
+			}
+		}
 
+		}
 	}
 
 	// Traverse the BBoard's message list, and invite the print function on Topic objects ONLY
 	// It will then be the responsibility of the Topic object to invoke the print function recursively on its own replies
 	// The BBoard display function will ignore all reply objects in its message list
 	private void display(){
-
+		for (int i = 0;i<messages.size();i++)	{
+			if(!messages.get(i).isReply())	{
+				messages.get(i).print(0);
+			}
+		}
 	}
 
 
@@ -106,7 +138,15 @@ private ArrayList<Message> messages = new ArrayList<>();
 	// Once the Topic has been constructed, add it to the messageList
 	// This should invoke your inheritance of Topic to Message
 	private void addTopic(){
-
+		Scanner red = new Scanner(System.in);
+		String topicNm;
+		String body;
+		System.out.print("Enter Topic Name: ");
+		topicNm =  red.nextLine();
+		System.out.print("Enter Body: ");
+		body = red.nextLine();
+		Topic top = new Topic(currentUser.getUsername(),topicNm,body, messages.size()+1);
+		messages.add(top);
 	}
 
 	// This function asks the user to enter a reply to a given Message (which may be either a Topic or a Reply, so we can handle nested replies).
@@ -139,6 +179,28 @@ private ArrayList<Message> messages = new ArrayList<>();
 	// Finally, push back the Message created to the BBoard's messageList. 
 	// Note: When the user chooses to return to the menu, do not call run() again - just return from this addReply function.
 	private void addReply(){
+		Scanner red = new Scanner(System.in);
+		int messageId = 0;
+		String body;
+		while (messageId!=-1) {
+			System.out.print("Enter Message ID (-1 for Menu): ");
+			messageId = Integer.parseInt(red.nextLine());
+			if(messageId>0)	{
+				break;
+			}
+			else if (messageId == -1)	{
+				run();
+				break;
+			}
+			else {
+				System.out.println("Try again!");
+			}
+		}
+		System.out.print("Enter Body: ");
+		body = red.nextLine();
+		Reply top = new Reply(currentUser.getUsername(),messages.get((messageId-1)).getSubject(),body, messages.size()+1);
+		messages.get(messageId-1).addChild(top);
+		messages.add(top);
 
 	}
 
@@ -150,7 +212,14 @@ private ArrayList<Message> messages = new ArrayList<>();
 	// Any password is allowed except 'c' or 'C' for allowing the user to quit out to the menu. 
 	// Once entered, the user will be told "Password Accepted." and returned to the menu.
 	private void setPassword(){
-		
+		Scanner red = new Scanner(System.in);
+		String oldpass;
+		String newpass;
+		System.out.print("Enter your old password: ");
+		oldpass = red.next();
+		System.out.print("Enter new password: ");
+		newpass = red.next();
+		currentUser.setPassword(oldpass,newpass);
 	}
 
 }
